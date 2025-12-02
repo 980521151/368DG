@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>36.8℃甜</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- 自定义配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#F8B195', // 主色调：温柔蜜桃色
+                        secondary: '#C06C84', // 辅助色：浪漫粉紫色
+                        accent: '#F67280', // 强调色：甜腻珊瑚红
+                        neutral: '#F9F7F7', // 中性色：奶油白
+                        dark: '#3D3D3D', // 深色：巧克力棕
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 30px -5px rgba(248, 177, 149, 0.15)',
+                        'hover': '0 20px 40px -5px rgba(246, 114, 128, 0.25)',
+                    }
+                },
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-8px);
+            }
+            /* 移动端触摸反馈 */
+            .touch-active {
+                touch-action: manipulation;
+            }
+            .touch-active:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+            /* 音乐控制按钮样式（已保留但隐藏功能） */
+            .music-btn {
+                transition: all 0.3s ease;
+                z-index: 60; /* 高于导航栏 */
+            }
+            .music-btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0 20px rgba(246, 114, 128, 0.3);
+            }
+            /* 加载动画 */
+            .loader {
+                border-top-color: #F67280;
+                animation: spinner 0.8s linear infinite;
+            }
+            @keyframes spinner {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            /* 轮播图样式 *//* 轮播图样式 */
+            .carousel-container {
+                position: relative;
+                overflow: hidden;
+            }
+            .carousel-track {
+                display: flex;
+                transition: transform 0.5s ease-in-out;
+            }
+            .carousel-slide {
+                min-width: 100%;
+                position: relative;
+            }
+            .carousel-indicator {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.5);
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            .carousel-indicator.active {
+                width: 30px;
+                border-radius: 5px;
+                background-color: white;
+            }
+            .carousel-control {
+                opacity: 0.7;
+                transition: all 0.3s ease;
+            }
+            .carousel-container:hover .carousel-control {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-neutral text-dark overflow-x-hidden touch-manipulation">
+<!-- 移除背景音乐元素 -->
+
+<!-- 隐藏音乐控制按钮功能（保留样式，点击无效果） -->
+<button id="musicControl" class="music-btn fixed top-20 right-6 md:top-24 md:right-8 bg-white/90 bg-blur text-accent w-12 h-12 rounded-full shadow-soft flex items-center justify-center touch-active" disabled>
+    <i class="fa fa-music text-xl"></i>
+</button>
+
+<!-- 导航栏 -->
+<header id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/95 bg-blur shadow-sm">
+    <div class="container mx-auto px-3 sm:px-4 py-2 sm:py-3 flex justify-between items-center">
+        <!-- 店名Logo -->
+        <a href="#" class="flex items-center gap-2">
+            <span class="text-accent text-2xl sm:text-3xl"><i class="fa fa-birthday-cake"></i></span>
+            <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">36.8℃甜</span>
+        </a>
+
+        <!-- 桌面端导航 -->
+        <nav class="hidden md:flex items-center gap-4 sm:gap-8">
+            <a href="#home" class="font-medium hover:text-accent transition-colors text-sm sm:text-base">首页</a>
+            <a href="#products" class="font-medium hover:text-accent transition-colors text-sm sm:text-base">商品展示</a>
+            <a href="#about" class="font-medium hover:text-accent transition-colors text-sm sm:text-base">关于我们</a>
+            <a href="#contact" class="font-medium hover:text-accent transition-colors text-sm sm:text-base">联系我们</a>
+        </nav>
+
+        <!-- 移动端菜单按钮 -->
+        <button id="menuBtn" class="md:hidden text-dark text-2xl w-10 h-10 flex items-center justify-center touch-active">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- 移动端导航菜单 -->
+    <div id="mobileMenu" class="md:hidden hidden bg-white shadow-lg absolute w-full border-t border-gray-100">
+        <div class="container mx-auto px-4 py-3 flex flex-col gap-3">
+            <a href="#home" class="py-3 px-2 border-b border-gray-100 hover:text-accent transition-colors text-base touch-active">首页</a>
+            <a href="#products" class="py-3 px-2 border-b border-gray-100 hover:text-accent transition-colors text-base touch-active">商品展示</a>
+            <a href="#about" class="py-3 px-2 border-b border-gray-100 hover:text-accent transition-colors text-base touch-active">关于我们</a>
+            <a href="#contact" class="py-3 px-2 border-b border-gray-100 hover:text-accent transition-colors text-base touch-active">联系我们</a>
+            <button class="bg-accent hover:bg-accent/90 text-white px-5 py-3 rounded-full shadow-soft transition-all w-full text-base touch-active">
+                <i class="fa fa-shopping-cart mr-2"></i>购物车
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- 英雄区（包含轮播图） -->
+<section id="home" class="pt-16 md:pt-0 min-h-screen flex items-center relative overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-r from-neutral/95 to-neutral/80"></div>
+    </div>
+    <div class="container mx-auto px-3 sm:px-4 py-16 sm:py-20 md:py-0 relative z-10">
+        <div class="flex flex-col lg:flex-row gap-8 items-center">
+            <div class="max-w-2xl lg:w-1/2">
+                <h1 class="text-[clamp(2rem,5vw,4rem)] font-bold leading-tight text-shadow mb-4">
+                    甜蜜升温 <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">36.8℃甜</span>
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl text-dark/80 mb-6 sm:mb-8 max-w-xl">
+                    每一款甜品都藏着治愈人心的温度，用匠心烘焙甜蜜，让美好时刻升温
+                </p>
+                <div class="flex flex-wrap gap-3 sm:gap-4">
+                    <a href="#products" class="bg-accent hover:bg-accent/90 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow-soft transition-all text-base sm:text-lg font-medium touch-active">
+                        探索甜品 <i class="fa fa-arrow-right ml-1 sm:ml-2"></i>
+                    </a>
+                    <a href="#about" class="bg-white hover:bg-gray-50 text-dark px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow-soft transition-all text-base sm:text-lg font-medium border border-gray-100 touch-active">
+                        了解我们
+                    </a>
+                </div>
+            </div>
+
+            <!-- 红框区域轮播图（8张商品图循环播放） -->
+            <div class="lg:w-1/2 w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-2xl shadow-soft overflow-hidden border border-gray-100">
+                <div class="carousel-container w-full h-full">
+                    <div class="carousel-track h-full">
+                        <!-- 轮播图片1-8 -->
+                        <div class="carousel-slide h-full">
+                            <img src="./images/开心果布朗尼.jpg" alt="开心果布朗尼" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                                <h3 class="text-white text-lg sm:text-xl font-bold">开心果布朗尼</h3>
+                            </div>
+                        </div>
+                        <div class="carousel-slide h-full">
+                            <img src="./images/抹茶草莓雪顶2.png" alt="抹茶草莓雪顶" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                                <h3 class="text-white text-lg sm:text-xl font-bold">抹茶草莓雪顶</h3>
+                            </div>
+                        </div>
+                        <div class="carousel-slide h-full">
+                            <img src="./images/抹茶布朗尼.jpg" alt="抹茶布朗尼" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                                <h3 class="text-white text-lg sm:text-xl font-bold">抹茶布朗尼</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 轮播控制按钮 -->
+                    <button class="carousel-control absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center touch-active">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-control absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center touch-active">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+
+                    <!-- 轮播指示器 -->
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        <!-- 指示器会通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 装饰元素 -->
+    <div class="absolute -bottom-5 -right-5 w-40 h-40 sm:w-64 sm:h-64 bg-primary/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-10 -left-5 w-30 h-30 sm:w-40 sm:h-40 bg-secondary/20 rounded-full blur-3xl"></div>
+</section>
+
+<!-- 商品展示区 -->
+<section id="products" class="py-12 sm:py-20 bg-white">
+    <div class="container mx-auto px-3 sm:px-4">
+        <div class="text-center mb-8 sm:mb-16">
+            <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-3 sm:mb-4">甜蜜甄选 <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">商品展示</span></h2>
+            <p class="text-dark/70 max-w-2xl mx-auto text-sm sm:text-base">精心挑选每一份食材，用心烘焙每一款甜品，为你带来舌尖上的甜蜜享受</p>
+        </div>
+
+        <!-- 商品分类导航（修改：将原"下午茶套餐"改为"下午茶"） -->
+        <div class="flex gap-3 sm:gap-4 mb-6 sm:mb-12 overflow-x-auto scrollbar-hide pb-2">
+            <button class="product-category-btn active bg-accent text-white px-4 sm:px-6 py-2 rounded-full shadow-soft transition-all whitespace-nowrap touch-active" data-category="all">
+                全部商品
+            </button>
+            <button class="product-category-btn bg-white text-dark hover:bg-gray-50 px-4 sm:px-6 py-2 rounded-full shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-category="cake">
+                蛋糕系列
+            </button>
+            <button class="product-category-btn bg-white text-dark hover:bg-gray-50 px-4 sm:px-6 py-2 rounded-full shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-category="coffee">
+                咖啡饮品
+            </button>
+            <button class="product-category-btn bg-white text-dark hover:bg-gray-50 px-4 sm:px-6 py-2 rounded-full shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-category="afternoon">
+                下午茶
+            </button>
+        </div>
+
+        <!-- 蛋糕子类筛选 -->
+        <div id="cakeSubcategory" class="flex gap-2 sm:gap-3 mb-6 sm:mb-10 overflow-x-auto scrollbar-hide pb-2 hidden">
+            <button class="cake-subcategory-btn active bg-secondary text-white px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all whitespace-nowrap touch-active" data-subcategory="all">
+                全部蛋糕
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="birthday">
+                异形定制
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="celebration">
+                福寿绵长
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="cartoon">
+                小熊奥奥
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="chestnut">
+                栗子季坚果
+            </button>
+            <!--            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="matchaBrownie">-->
+            <!--                抹茶布朗尼-->
+            <!--            </button>-->
+        </div>
+
+        <!-- 咖啡子类筛选 -->
+        <div id="coffeeSubcategory" class="flex gap-2 sm:gap-3 mb-6 sm:mb-10 overflow-x-auto scrollbar-hide pb-2 hidden">
+            <button class="coffee-subcategory-btn active bg-secondary text-white px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all whitespace-nowrap touch-active" data-subcategory="all">
+                全部咖啡
+            </button>
+            <button class="coffee-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="classic">
+                经典咖啡
+            </button>
+            <button class="coffee-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="special">
+                特色咖啡
+            </button>
+            <button class="coffee-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="noncoffee">
+                无咖系列
+            </button>
+        </div>
+
+        <!-- 下午茶子类筛选（对应"下午茶"一级分类的二级子类） -->
+        <div id="afternoonSubcategory" class="flex gap-2 sm:gap-3 mb-6 sm:mb-10 overflow-x-auto scrollbar-hide pb-2 hidden">
+            <button class="afternoon-subcategory-btn active bg-secondary text-white px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all whitespace-nowrap touch-active" data-subcategory="all">
+                全部下午茶
+            </button>
+            <button class="afternoon-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="set">
+                下午茶套餐
+            </button>
+        </div>
+
+        <!-- 商品网格 -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            <!-- 商品卡片将通过JS动态加载 -->
+        </div>
+
+        <!-- 加载更多按钮 -->
+        <div class="text-center mt-8 sm:mt-12">
+            <button id="loadMoreBtn" class="load-more-btn bg-white hover:bg-gray-50 text-dark px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow-soft transition-all text-base sm:text-lg font-medium border border-gray-100 touch-active">
+                加载更多 <i class="fa fa-refresh ml-1 sm:ml-2"></i>
+            </button>
+            <!-- 加载中动画 -->
+            <div id="loadingSpinner" class="hidden mt-8 sm:mt-12">
+                <div class="inline-block w-8 h-8 border-4 border-gray-200 rounded-full loader"></div>
+                <p class="mt-3 text-dark/70 text-sm sm:text-base">加载中...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 关于我们 -->
+<section id="about" class="py-12 sm:py-20 bg-neutral relative overflow-hidden">
+    <div class="container mx-auto px-3 sm:px-4 relative z-10">
+        <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-12">
+            <div class="md:w-1/2 order-2 md:order-1">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-4 sm:mb-6">关于 <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">36.8℃甜</span></h2>
+                <p class="text-dark/80 mb-4 sm:mb-6 text-base sm:text-lg">
+                    36.8℃甜，是人体感知甜蜜的最佳温度。我们成立于2025年，始终坚持以"用温度传递甜蜜"为理念，精选全球优质食材，拒绝添加剂，纯手工制作每一款甜品。
+                </p>
+                <p class="text-dark/80 mb-6 sm:mb-8 text-base sm:text-lg">
+                    我们的烘焙师团队拥有10年以上行业经验，不断创新口味与造型，无论是生日庆典、长辈祝寿还是儿童派对，都能为你提供专属的甜蜜解决方案。
+                </p>
+                <div class="flex flex-wrap gap-4 sm:gap-6">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <span class="text-accent text-2xl sm:text-3xl"><i class="fa fa-check-circle"></i></span>
+                        <div>
+                            <h4 class="font-bold text-base sm:text-lg">优质食材</h4>
+                            <p class="text-dark/70 text-xs sm:text-sm">全球甄选，新鲜直达</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <span class="text-accent text-2xl sm:text-3xl"><i class="fa fa-check-circle"></i></span>
+                        <div>
+                            <h4 class="font-bold text-base sm:text-lg">纯手工制作</h4>
+                            <p class="text-dark/70 text-xs sm:text-sm">匠心烘焙，无添加剂</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 order-1 md:order-2 grid grid-cols-2 gap-3 sm:gap-4">
+                <img src="./images/小栗蛋糕.jpg" alt="甜品展示" class="rounded-xl shadow-soft h-48 sm:h-64 object-cover">
+                <img src="./images/小熊奥巧.jpg" alt="甜品展示" class="rounded-xl shadow-soft h-40 sm:h-48 object-cover mt-8 sm:mt-16">
+                <img src="./images/抹茶巴斯克+任意饮品下午茶套餐.jpg" alt="甜品展示" class="rounded-xl shadow-soft h-40 sm:h-48 object-cover">
+                <img src="./images/抹茶布朗尼.jpg" alt="甜品展示" class="rounded-xl shadow-soft h-48 sm:h-64 object-cover mt-8 sm:mt-16">
+            </div>
+        </div>
+    </div>
+    <!-- 装饰元素 -->
+    <div class="absolute -top-10 -right-10 w-50 h-50 sm:w-80 sm:h-80 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-5 -left-5 w-40 h-40 sm:w-60 sm:h-60 bg-secondary/10 rounded-full blur-3xl"></div>
+</section>
+
+<!-- 联系我们 -->
+<section id="contact" class="py-12 sm:py-20 bg-white">
+    <div class="container mx-auto px-3 sm:px-4">
+        <div class="text-center mb-8 sm:mb-16">
+            <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-3 sm:mb-4">联系我们 <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">甜蜜相约</span></h2>
+            <p class="text-dark/70 max-w-2xl mx-auto text-sm sm:text-base">无论是定制蛋糕、预约堂食还是商务合作，都可以通过以下方式联系我们</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div class="bg-neutral rounded-2xl p-5 sm:p-8 shadow-soft text-center">
+                <span class="text-accent text-3xl sm:text-4xl mb-3 sm:mb-4 inline-block"><i class="fa fa-map-marker"></i></span>
+                <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3">门店地址</h3>
+                <p class="text-dark/70 text-sm sm:text-base">陕西省宝鸡市高新三路盛景华都西门36.8℃甜</p>
+            </div>
+
+            <div class="bg-neutral rounded-2xl p-5 sm:p-8 shadow-soft text-center">
+                <span class="text-accent text-3xl sm:text-4xl mb-3 sm:mb-4 inline-block"><i class="fa fa-phone"></i></span>
+                <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3">联系电话</h3>
+                <p class="text-dark/70 text-sm sm:text-base">19946569082</p>
+                <p class="text-dark/70 text-sm sm:text-base mt-2">营业时间：09:30-19:30</p>
+            </div>
+
+            <div class="bg-neutral rounded-2xl p-5 sm:p-8 shadow-soft text-center">
+                <span class="text-accent text-3xl sm:text-4xl mb-3 sm:mb-4 inline-block"><i class="fa fa-weixin"></i></span>
+                <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3">微信客服</h3>
+                <p class="text-dark/70 text-sm sm:text-base">扫描下方二维码</p>
+                <div class="w-28 sm:w-32 h-28 sm:h-32 bg-white rounded-lg shadow-md mx-auto mt-3 sm:mt-4 flex items-center justify-center">
+                    <span class="text-gray-400 text-xs sm:text-sm">
+                        <img src="./images/二维码.png" alt="微信二维码">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="bg-dark text-white py-8 sm:py-12">
+    <div class="container mx-auto px-3 sm:px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                <a href="#" class="flex items-center gap-2 mb-4 sm:mb-6">
+                    <span class="text-accent text-2xl sm:text-3xl"><i class="fa fa-birthday-cake"></i></span>
+                    <span class="text-xl sm:text-2xl font-bold text-white">36.8℃甜</span>
+                </a>
+                <p class="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">用温度传递甜蜜，用匠心烘焙美好</p>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4 sm:mb-6">快速链接</h3>
+                <ul class="space-y-2 sm:space-y-3">
+                    <li><a href="#home" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">首页</a></li>
+                    <li><a href="#products" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">商品展示</a></li>
+                    <li><a href="#about" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">关于我们</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">联系我们</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4 sm:mb-6">商品分类</h3>
+                <ul class="space-y-2 sm:space-y-3">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">蛋糕系列</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">咖啡饮品</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base touch-active">下午茶</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-gray-500 text-xs sm:text-sm">
+            <p>36.8℃甜 © 2025 版权所有</p>
+        </div>
+    </div>
+</footer>
+
+<!-- 回到顶部按钮 -->
+<button id="backToTop" class="fixed bottom-6 right-6 bg-accent text-white w-12 h-12 rounded-full shadow-soft flex items-center justify-center transition-all opacity-0 invisible touch-active">
+    <i class="fa fa-arrow-up"></i>
+</button>
+
+<!-- JavaScript -->
+<script>
+    // 导航栏滚动效果
+    const navbar = document.getElementById('navbar');
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 30) {
+            navbar.classList.add('py-1', 'shadow-md');
+            navbar.classList.remove('py-2', 'sm:py-3', 'shadow-sm');
+
+            if (window.scrollY > 200) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        } else {
+            navbar.classList.add('py-2', 'sm:py-3', 'shadow-sm');
+            navbar.classList.remove('py-1', 'shadow-md');
+        }
+    });
+
+    // 移动端菜单切换
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        menuBtn.innerHTML = isOpen ? '<i class="fa fa-times"></i>' : '<i class="fa fa-bars"></i>';
+        document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+    });
+
+    // 回到顶部功能
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // 页脚分类链接跳转
+    document.querySelectorAll('footer .space-y-2 a').forEach(link => {
+        const text = link.textContent.trim();
+        let category = 'all';
+
+        switch(text) {
+            case '蛋糕系列':
+                category = 'cake';
+                break;
+            case '咖啡饮品':
+                category = 'coffee';
+                break;
+            case '下午茶':
+                category = 'afternoon';
+                break;
+        }
+
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productsSection = document.getElementById('products');
+            const offsetTop = productsSection.offsetTop - 80;
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+
+            setTimeout(() => {
+                const targetBtn = document.querySelector(`.product-category-btn[data-category="${category}"]`);
+                if (targetBtn && !targetBtn.classList.contains('active')) {
+                    targetBtn.click();
+                }
+            }, 500);
+        });
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                    document.body.style.overflow = 'auto';
+                }
+
+                const offsetTop = targetElement.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // 防止移动端双击缩放
+    document.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+    }, { passive: false });
+
+    // 移除音乐控制相关逻辑
+
+    // 轮播图功能实现
+    function initCarousel() {
+        const carouselContainer = document.querySelector('.carousel-container');
+        const track = document.querySelector('.carousel-track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = carouselContainer.querySelector('.carousel-control:first-of-type');
+        const nextBtn = carouselContainer.querySelector('.carousel-control:last-of-type');
+        const indicatorsContainer = carouselContainer.querySelector('.absolute.bottom-4');
+        const slideCount = slides.length;
+        let currentIndex = 0;
+        let interval;
+
+        // 创建指示器
+        slides.forEach((_, index) => {
+            const indicator = document.createElement('div');
+            indicator.classList.add('carousel-indicator');
+            if (index === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => goToSlide(index));
+            indicatorsContainer.appendChild(indicator);
+        });
+        const indicators = document.querySelectorAll('.carousel-indicator');
+
+        // 轮播到指定幻灯片
+        function goToSlide(index) {
+            currentIndex = index;
+            if (currentIndex < 0) currentIndex = slideCount - 1;
+            if (currentIndex >= slideCount) currentIndex = 0;
+
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            indicators.forEach((indicator, i) => {
+                if (i === currentIndex) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // 下一张
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        // 上一张
+        function prevSlide() {
+            goToSlide(currentIndex - 1);
+        }
+
+        // 自动轮播
+        function startAutoPlay() {
+            if (interval) clearInterval(interval);
+            interval = setInterval(nextSlide, 3000);
+        }
+
+        // 暂停自动轮播
+        function stopAutoPlay() {
+            clearInterval(interval);
+            interval = null;
+        }
+
+        // 事件监听
+        nextBtn.addEventListener('click', () => {
+            stopAutoPlay();
+            nextSlide();
+            startAutoPlay();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            stopAutoPlay();
+            prevSlide();
+            startAutoPlay();
+        });
+
+        carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startAutoPlay);
+
+        // 触摸滑动支持
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        carouselContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stopAutoPlay();
+        }, { passive: true });
+
+        carouselContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            startAutoPlay();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX - touchStartX > swipeThreshold) {
+                prevSlide();
+            } else if (touchStartX - touchEndX > swipeThreshold) {
+                nextSlide();
+            }
+        }
+
+        startAutoPlay();
+    }
+
+    // 商品分页加载逻辑
+    const productData = {
+        cake: [
+            { id: 2, name: "福寿绵长蛋糕", desc: "爱不用翻山越岭，孝心也不用飘洋过海，一个蛋糕足以表达，愿您幸福安宁常在", price: 268, category: "cake", subcategory: "celebration",
+                imgUrl: "images/福寿绵长—祝寿类.jpg" },
+            { id: 3, name: "小熊奥巧蛋糕", desc: "奥利奥搭配可爱小熊饼干，绵密里裹着酥脆，甜而不腻的温柔感直接拿捏", price: 188, category: "cake", subcategory: "cartoon",
+                imgUrl: "images/小熊奥巧.jpg"},
+            { id: 5, name: "小熊奥巧蛋糕", desc: "奥利奥搭配可爱小熊饼干，绵密里裹着酥脆，甜而不腻的温柔感直接拿捏", price: 238, category: "cake", subcategory: "cartoon",
+                imgUrl: "images/小熊奥巧2.png"},
+            { id: 1, name: "小清心水果蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", price: 198, category: "cake", subcategory: "birthday",
+                imgUrl: "images/小清心水果蛋糕.jpg"},
+            { id: 4, name: "秘密花园蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", price: 228, category: "cake", subcategory: "birthday",
+                imgUrl: "images/秘密花园.jpg"},
+            { id: 6, name: "应援蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", price: 218, category: "cake", subcategory: "birthday",
+                imgUrl: "images/应援蛋糕2.png"},
+            { id: 7, name: "坚果栗子", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬", price: 258, category: "cake", subcategory: "chestnut",
+                imgUrl: "images/坚果栗子.jpg"},
+            { id: 8, name: "核桃栗子", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬", price: 228, category: "cake", subcategory: "chestnut",
+                imgUrl: "images/核桃栗子.jpg"},
+            { id: 9, name: "小栗蛋糕", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬", price: 248, category: "cake", subcategory: "chestnut",
+                imgUrl: "images/小栗蛋糕.jpg"},
+        ],
+        coffee: [
+            // 经典咖啡
+            { id: 19, name: "经典拿铁", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈", price: 32, category: "coffee", subcategory: "classic",
+                imgUrl: "images/经典拿铁.jpg"},
+            { id: 20, name: "经典美式", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈", price: 36, category: "coffee", subcategory: "classic",
+                imgUrl: "images/经典美式.jpg"},
+            { id: 21, name: "经典摩卡", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈", price: 28, category: "coffee", subcategory: "classic",
+                imgUrl: "images/经典摩卡.jpg"},
+            // 特色咖啡
+            { id: 22, name: "生椰拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 34, category: "coffee", subcategory: "special",
+                imgUrl: "images/生椰拿铁2.png"},
+            { id: 23, name: "焦糖卡美罗拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 35, category: "coffee", subcategory: "special",
+                imgUrl: "images/焦糖卡美罗拿铁.jpg"},
+            { id: 24, name: "抹茶拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 38, category: "coffee", subcategory: "special",
+                imgUrl: "images/抹茶拿铁.jpg"},
+            { id: 25, name: "抹茶拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 36, category: "coffee", subcategory: "special",
+                imgUrl: "images/抹茶拿铁2.jpg"},
+            // 无咖系列
+            { id: 26, name: "巧克力牛奶", desc: "绵密的无咖奶饮，温润的口感带着原生清甜，每一口都是无负担的治愈风味", price: 37, category: "coffee", subcategory: "noncoffee",
+                imgUrl: "images/巧克力牛奶.jpg"},
+        ],
+        afternoon: [
+            { id: 27, name: "奥奥小火山+拿铁下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", price: 168, category: "afternoon", subcategory: "set",
+                imgUrl: "images/奥奥小火山+拿铁下午茶套餐.jpg"},
+            { id: 28, name: "原味巴斯克+桂花拿铁下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", price: 188, category: "afternoon", subcategory: "set",
+                imgUrl: "images/原味巴斯克+桂花拿铁下午茶套餐.jpg"},
+            { id: 29, name: "抹茶巴斯克+任意饮品下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", price: 228, category: "afternoon", subcategory: "set",
+                imgUrl: "images/抹茶巴斯克+任意饮品下午茶套餐.jpg"},
+            { id: 30, name: "莓莓雪顶下午茶套餐（不含饮品）", desc: "含2块精致蛋糕，午后闺蜜小聚首选", price: 268, category: "afternoon", subcategory: "set",
+                imgUrl: "images/莓莓雪顶下午茶套餐（不含饮品）2.png"},
+        ]
+    };
+
+    const state = {
+        currentCategory: 'all',
+        currentCakeSubcategory: 'all',
+        currentCoffeeSubcategory: 'all',
+        currentAfternoonSubcategory: 'all',
+        pageSize: 8,
+        currentPage: 1,
+        isLoading: false,
+        allProducts: [],
+        filteredProducts: []
+    };
+
+    function initAllProducts() {
+        state.allProducts = [
+            ...productData.cake,
+            ...productData.coffee,
+            ...productData.afternoon
+        ];
+        state.filteredProducts = [...state.allProducts];
+    }
+
+    function createProductCard(product) {
+        let tagText = '';
+        let tagBg = '';
+
+        // 咖啡子类标签
+        if (product.category === 'coffee') {
+            if (product.subcategory === 'classic') {
+                tagText = '经典咖啡';
+                tagBg = 'bg-dark';
+            } else if (product.subcategory === 'special') {
+                tagText = '特色咖啡';
+                tagBg = 'bg-secondary';
+            } else if (product.subcategory === 'noncoffee') {
+                tagText = '无咖系列';
+                tagBg = 'bg-primary';
+            } else {
+                tagText = '咖啡';
+                tagBg = 'bg-dark';
+            }
+        }
+        // 蛋糕标签（新增抹茶布朗尼标签逻辑）
+        else if (product.category === 'cake') {
+            tagText = product.subcategory === 'birthday' ? '异形定制' :
+                product.subcategory === 'celebration' ? '福寿绵长' :
+                    product.subcategory === 'cartoon' ? '小熊奥奥' :
+                        product.subcategory === 'chestnut' ? '栗子季坚果' :
+                            product.subcategory === 'matchaBrownie' ? '抹茶布朗尼' : '蛋糕系列';
+            tagBg = product.subcategory === 'birthday' ? 'bg-accent' :
+                product.subcategory === 'celebration' ? 'bg-secondary' :
+                    product.subcategory === 'cartoon' ? 'bg-primary' :
+                        product.subcategory === 'chestnut' ? 'bg-amber-500' :
+                            product.subcategory === 'matchaBrownie' ? 'bg-green-500' : 'bg-primary';
+        }
+        // 下午茶标签
+        else if (product.category === 'afternoon') {
+            tagText = product.subcategory === 'set' ? '下午茶套餐' : '下午茶';
+            tagBg = 'bg-accent';
+        } else {
+            tagText = '下午茶';
+            tagBg = 'bg-accent';
+        }
+
+        const imgSrc = product.imgUrl;
+
+        return `
+            <div class="product-card card-hover shadow-soft rounded-2xl overflow-hidden bg-white" data-category="${product.category}" data-subcategory="${product.subcategory || 'all'}">
+                <div class="relative overflow-hidden h-48 sm:h-56 lg:h-64">
+                    <img src="${imgSrc}"
+                         alt="${product.name}"
+                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                         crossorigin="anonymous"
+                          this.onerror=null;">
+                    <div class="absolute top-3 right-3 ${tagBg} text-white text-xs sm:text-sm font-medium px-2.5 py-1 rounded-full">
+                        ${tagText}
+                    </div>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2">${product.name}</h3>
+                    <p class="text-dark/70 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">${product.desc}</p>
+                    <div class="flex justify-between items-center">
+                        <!--<span class="text-accent font-bold text-lg sm:text-xl">¥${product.price}</span>
+                        <button class="bg-primary/10 hover:bg-primary/20 text-accent p-2.5 rounded-full transition-colors touch-active">
+                            <i class="fa fa-shopping-cart"></i>
+                        </button>-->
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function loadProducts() {
+        if (state.isLoading) return;
+
+        state.isLoading = true;
+        document.getElementById('loadMoreBtn').classList.add('hidden');
+        document.getElementById('loadingSpinner').classList.remove('hidden');
+
+        setTimeout(() => {
+            const startIndex = (state.currentPage - 1) * state.pageSize;
+            const endIndex = startIndex + state.pageSize;
+            const productsToLoad = state.filteredProducts.slice(startIndex, endIndex);
+
+            const productGrid = document.getElementById('productGrid');
+            productsToLoad.forEach(product => {
+                productGrid.innerHTML += createProductCard(product);
+            });
+
+            const hasMore = endIndex < state.filteredProducts.length;
+            if (!hasMore) {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                document.getElementById('loadMoreBtn').classList.remove('hidden');
+                document.getElementById('loadMoreBtn').innerHTML = '已加载全部商品';
+                document.getElementById('loadMoreBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('loadMoreBtn').disabled = true;
+            } else {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                document.getElementById('loadMoreBtn').classList.remove('hidden');
+            }
+
+            state.currentPage++;
+            state.isLoading = false;
+        }, 800);
+    }
+
+    function filterProducts() {
+        let filtered = [];
+
+        if (state.currentCategory === 'all') {
+            filtered = [...state.allProducts];
+        }
+        // 蛋糕分类筛选（
+        else if (state.currentCategory === 'cake') {
+            if (state.currentCakeSubcategory === 'all') {
+                filtered = [...productData.cake];
+            } else {
+                filtered = productData.cake.filter(item => item.subcategory === state.currentCakeSubcategory);
+            }
+        }
+        // 咖啡分类筛选
+        else if (state.currentCategory === 'coffee') {
+            if (state.currentCoffeeSubcategory === 'all') {
+                filtered = [...productData.coffee];
+            } else {
+                filtered = productData.coffee.filter(item => item.subcategory === state.currentCoffeeSubcategory);
+            }
+        }
+        // 下午茶分类筛选
+        else if (state.currentCategory === 'afternoon') {
+            if (state.currentAfternoonSubcategory === 'all') {
+                filtered = [...productData.afternoon];
+            } else {
+                filtered = productData.afternoon.filter(item => item.subcategory === state.currentAfternoonSubcategory);
+            }
+        } else {
+            filtered = [...productData[state.currentCategory]];
+        }
+
+        state.filteredProducts = filtered;
+        state.currentPage = 1;
+
+        document.getElementById('productGrid').innerHTML = '';
+
+        document.getElementById('loadMoreBtn').innerHTML = '加载更多 <i class="fa fa-refresh ml-1 sm:ml-2"></i>';
+        document.getElementById('loadMoreBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('loadMoreBtn').disabled = false;
+
+        loadProducts();
+    }
+
+    function bindCategoryEvents() {
+        // 一级分类事件
+        const categoryBtns = document.querySelectorAll('.product-category-btn');
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-accent', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-accent', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+
+                state.currentCategory = btn.getAttribute('data-category');
+
+                // 显示对应子类筛选栏（新增：下午茶子类筛选栏显示逻辑）
+                if (state.currentCategory === 'cake') {
+                    document.getElementById('cakeSubcategory').classList.remove('hidden');
+                    document.getElementById('coffeeSubcategory').classList.add('hidden');
+                    document.getElementById('afternoonSubcategory').classList.add('hidden');
+                } else if (state.currentCategory === 'coffee') {
+                    document.getElementById('coffeeSubcategory').classList.remove('hidden');
+                    document.getElementById('cakeSubcategory').classList.add('hidden');
+                    document.getElementById('afternoonSubcategory').classList.add('hidden');
+                } else if (state.currentCategory === 'afternoon') {
+                    document.getElementById('afternoonSubcategory').classList.remove('hidden');
+                    document.getElementById('cakeSubcategory').classList.add('hidden');
+                    document.getElementById('coffeeSubcategory').classList.add('hidden');
+                } else {
+                    document.getElementById('cakeSubcategory').classList.add('hidden');
+                    document.getElementById('coffeeSubcategory').classList.add('hidden');
+                    document.getElementById('afternoonSubcategory').classList.add('hidden');
+                }
+
+                filterProducts();
+            });
+        });
+
+        // 蛋糕子类事件
+        const cakeSubcategoryBtns = document.querySelectorAll('.cake-subcategory-btn');
+        cakeSubcategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                cakeSubcategoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-secondary', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-secondary', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+
+                state.currentCakeSubcategory = btn.getAttribute('data-subcategory');
+                filterProducts();
+            });
+        });
+
+        // 咖啡子类事件
+        const coffeeSubcategoryBtns = document.querySelectorAll('.coffee-subcategory-btn');
+        coffeeSubcategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                coffeeSubcategoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-secondary', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-secondary', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+
+                state.currentCoffeeSubcategory = btn.getAttribute('data-subcategory');
+                filterProducts();
+            });
+        });
+
+        // 下午茶子类事件（新增：绑定下午茶子类筛选逻辑）
+        const afternoonSubcategoryBtns = document.querySelectorAll('.afternoon-subcategory-btn');
+        afternoonSubcategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                afternoonSubcategoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-secondary', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-secondary', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+
+                state.currentAfternoonSubcategory = btn.getAttribute('data-subcategory');
+                filterProducts();
+            });
+        });
+
+        // 加载更多按钮事件
+        document.getElementById('loadMoreBtn').addEventListener('click', loadProducts);
+    }
+
+    // 初始化页面
+    function init() {
+        initCarousel();
+        initAllProducts();
+        bindCategoryEvents();
+        filterProducts();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
