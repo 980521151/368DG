@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>36.8℃甜</title>
-    <!-- 强制HTTPS（解决iOS混合内容拦截） -->
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <!-- ES6+语法兼容垫片（iOS低版本兜底） -->
-    <script src="https://cdn.jsdelivr.net/npm/es6-shim@0.35.7/es6-shim.min.js"></script>
     <!-- 引入外部资源 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -39,12 +35,13 @@
 
     <style type="text/tailwindcss">
         @layer utilities {
-            /* 移除content-auto（iOS不支持content-visibility） */
+            .content-auto {
+                content-visibility: auto;
+            }
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
             .bg-blur {
-                -webkit-backdrop-filter: blur(8px); /* iOS Safari兼容前缀 */
                 backdrop-filter: blur(8px);
             }
             .scrollbar-hide::-webkit-scrollbar {
@@ -167,7 +164,7 @@
             .product-img:hover, .carousel-img:hover, .gallery-img:hover {
                 opacity: 0.95;
             }
-            /* 图片懒加载占位符（兼容iOS原生懒加载） */
+            /* 图片懒加载占位符 */
             .img-placeholder {
                 background-color: #f1f1f1;
                 background-image: linear-gradient(90deg, #f1f1f1 0%, #f5f5f5 50%, #f1f1f1 100%);
@@ -254,18 +251,17 @@
                 </div>
             </div>
 
-            <!-- 轮播图（改用原生懒加载 + iOS兼容） -->
+            <!-- 轮播图（图片添加放大功能 + 懒加载） -->
             <div class="lg:w-1/2 w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-2xl shadow-soft overflow-hidden border border-gray-100">
                 <div class="carousel-container w-full h-full">
                     <div class="carousel-track h-full">
                         <div class="carousel-slide h-full">
                             <img
-                                    src="./images/开心果布朗尼.jpg"
+                                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                                    data-src="./images/开心果布朗尼.jpg"
                                     alt="开心果布朗尼"
-                                    class="w-full h-full object-cover carousel-img"
+                                    class="w-full h-full object-cover carousel-img img-placeholder"
                                     data-img="./images/开心果布朗尼.jpg"
-                                    loading="lazy"
-                                    onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                             >
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
                                 <h3 class="text-white text-lg sm:text-xl font-bold">开心果布朗尼</h3>
@@ -273,12 +269,11 @@
                         </div>
                         <div class="carousel-slide h-full">
                             <img
-                                    src="./images/抹茶草莓雪顶2.png"
+                                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                                    data-src="./images/抹茶草莓雪顶2.png"
                                     alt="抹茶草莓雪顶"
-                                    class="w-full h-full object-cover carousel-img"
+                                    class="w-full h-full object-cover carousel-img img-placeholder"
                                     data-img="./images/抹茶草莓雪顶2.png"
-                                    loading="lazy"
-                                    onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                             >
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
                                 <h3 class="text-white text-lg sm:text-xl font-bold">抹茶草莓雪顶</h3>
@@ -286,12 +281,11 @@
                         </div>
                         <div class="carousel-slide h-full">
                             <img
-                                    src="./images/抹茶布朗尼.jpg"
+                                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                                    data-src="./images/抹茶布朗尼.jpg"
                                     alt="抹茶布朗尼"
-                                    class="w-full h-full object-cover carousel-img"
+                                    class="w-full h-full object-cover carousel-img img-placeholder"
                                     data-img="./images/抹茶布朗尼.jpg"
-                                    loading="lazy"
-                                    onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                             >
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
                                 <h3 class="text-white text-lg sm:text-xl font-bold">抹茶布朗尼</h3>
@@ -411,7 +405,7 @@
     </div>
 </section>
 
-<!-- 关于我们（改用原生懒加载） -->
+<!-- 关于我们（图片添加放大功能 + 懒加载） -->
 <section id="about" class="py-12 sm:py-20 bg-neutral relative overflow-hidden">
     <div class="container mx-auto px-3 sm:px-4 relative z-10">
         <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-12">
@@ -442,36 +436,32 @@
             </div>
             <div class="md:w-1/2 order-1 md:order-2 grid grid-cols-2 gap-3 sm:gap-4">
                 <img
-                        src="./images/小栗蛋糕.jpg"
+                        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        data-src="./images/小栗蛋糕.jpg"
                         alt="甜品展示"
-                        class="rounded-xl shadow-soft h-48 sm:h-64 object-cover gallery-img"
+                        class="rounded-xl shadow-soft h-48 sm:h-64 object-cover gallery-img img-placeholder"
                         data-img="./images/小栗蛋糕.jpg"
-                        loading="lazy"
-                        onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                 >
                 <img
-                        src="./images/小熊奥巧.jpg"
+                        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        data-src="./images/小熊奥巧.jpg"
                         alt="甜品展示"
-                        class="rounded-xl shadow-soft h-40 sm:h-48 object-cover mt-8 sm:mt-16 gallery-img"
+                        class="rounded-xl shadow-soft h-40 sm:h-48 object-cover mt-8 sm:mt-16 gallery-img img-placeholder"
                         data-img="./images/小熊奥巧.jpg"
-                        loading="lazy"
-                        onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                 >
                 <img
-                        src="./images/抹茶巴斯克+任意饮品下午茶套餐.jpg"
+                        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        data-src="./images/抹茶巴斯克+任意饮品下午茶套餐.jpg"
                         alt="甜品展示"
-                        class="rounded-xl shadow-soft h-40 sm:h-48 object-cover gallery-img"
+                        class="rounded-xl shadow-soft h-40 sm:h-48 object-cover gallery-img img-placeholder"
                         data-img="./images/抹茶巴斯克+任意饮品下午茶套餐.jpg"
-                        loading="lazy"
-                        onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                 >
                 <img
-                        src="./images/抹茶布朗尼.jpg"
+                        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        data-src="./images/抹茶布朗尼.jpg"
                         alt="甜品展示"
-                        class="rounded-xl shadow-soft h-48 sm:h-64 object-cover mt-8 sm:mt-16 gallery-img"
+                        class="rounded-xl shadow-soft h-48 sm:h-64 object-cover mt-8 sm:mt-16 gallery-img img-placeholder"
                         data-img="./images/抹茶布朗尼.jpg"
-                        loading="lazy"
-                        onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                 >
             </div>
         </div>
@@ -481,7 +471,7 @@
     <div class="absolute bottom-5 -left-5 w-40 h-40 sm:w-60 sm:h-60 bg-secondary/10 rounded-full blur-3xl"></div>
 </section>
 
-<!-- 联系我们（改用原生懒加载） -->
+<!-- 联系我们（二维码添加放大功能 + 懒加载） -->
 <section id="contact" class="py-12 sm:py-20 bg-white">
     <div class="container mx-auto px-3 sm:px-4">
         <div class="text-center mb-8 sm:mb-16">
@@ -509,12 +499,11 @@
                 <p class="text-dark/70 text-sm sm:text-base">扫描下方二维码</p>
                 <div class="w-28 sm:w-32 h-28 sm:h-32 bg-white rounded-lg shadow-md mx-auto mt-3 sm:mt-4 flex items-center justify-center">
                     <img
-                            src="./images/二维码.png"
+                            src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                            data-src="./images/二维码.png"
                             alt="微信二维码"
-                            class="gallery-img"
+                            class="gallery-img img-placeholder"
                             data-img="./images/二维码.png"
-                            loading="lazy"
-                            onerror="this.onerror=null; this.src='./images/default-img.jpg';"
                     >
                 </div>
             </div>
@@ -565,13 +554,13 @@
     <i class="fa fa-arrow-up"></i>
 </button>
 
-<!-- JavaScript（全兼容iOS，移除ES6+箭头函数/Map） -->
+<!-- JavaScript -->
 <script>
     // 导航栏滚动效果
-    var navbar = document.getElementById('navbar');
-    var backToTop = document.getElementById('backToTop');
+    const navbar = document.getElementById('navbar');
+    const backToTop = document.getElementById('backToTop');
 
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', () => {
         if (window.scrollY > 30) {
             navbar.classList.add('py-1', 'shadow-md');
             navbar.classList.remove('py-2', 'sm:py-3', 'shadow-sm');
@@ -590,18 +579,18 @@
     });
 
     // 移动端菜单切换
-    var menuBtn = document.getElementById('menuBtn');
-    var mobileMenu = document.getElementById('mobileMenu');
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
 
-    menuBtn.addEventListener('click', function() {
+    menuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
-        var isOpen = !mobileMenu.classList.contains('hidden');
+        const isOpen = !mobileMenu.classList.contains('hidden');
         menuBtn.innerHTML = isOpen ? '<i class="fa fa-times"></i>' : '<i class="fa fa-bars"></i>';
         document.body.style.overflow = isOpen ? 'hidden' : 'auto';
     });
 
     // 回到顶部功能
-    backToTop.addEventListener('click', function() {
+    backToTop.addEventListener('click', () => {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -609,70 +598,66 @@
     });
 
     // 页脚分类链接跳转
-    var footerLinks = document.querySelectorAll('footer .space-y-2 a');
-    for (var i = 0; i < footerLinks.length; i++) {
-        var link = footerLinks[i];
-        var text = link.textContent.trim();
-        var category = 'all';
+    document.querySelectorAll('footer .space-y-2 a').forEach(link => {
+        const text = link.textContent.trim();
+        let category = 'all';
 
-        if (text === '蛋糕系列') {
-            category = 'cake';
-        } else if (text === '咖啡饮品') {
-            category = 'coffee';
-        } else if (text === '下午茶') {
-            category = 'afternoon';
+        switch(text) {
+            case '蛋糕系列':
+                category = 'cake';
+                break;
+            case '咖啡饮品':
+                category = 'coffee';
+                break;
+            case '下午茶':
+                category = 'afternoon';
+                break;
         }
 
-        (function(cat) {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                var productsSection = document.getElementById('products');
-                var offsetTop = productsSection.offsetTop - 80;
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-
-                setTimeout(function() {
-                    var targetBtn = document.querySelector('.product-category-btn[data-category="' + cat + '"]');
-                    if (targetBtn && !targetBtn.classList.contains('active')) {
-                        targetBtn.click();
-                    }
-                }, 500);
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productsSection = document.getElementById('products');
+            const offsetTop = productsSection.offsetTop - 80;
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
             });
-        })(category);
-    }
+
+            setTimeout(() => {
+                const targetBtn = document.querySelector(`.product-category-btn[data-category="${category}"]`);
+                if (targetBtn && !targetBtn.classList.contains('active')) {
+                    targetBtn.click();
+                }
+            }, 500);
+        });
+    });
 
     // 防止移动端双击缩放
-    document.addEventListener('dblclick', function(e) {
+    document.addEventListener('dblclick', (e) => {
         e.preventDefault();
     }, { passive: false });
 
-    // 轮播图功能实现（兼容iOS）
+    // 轮播图功能实现
     function initCarousel() {
-        var carouselContainer = document.querySelector('.carousel-container');
-        var track = document.querySelector('.carousel-track');
-        var slides = document.querySelectorAll('.carousel-slide');
-        var prevBtn = carouselContainer.querySelector('.carousel-control:first-of-type');
-        var nextBtn = carouselContainer.querySelector('.carousel-control:last-of-type');
-        var indicatorsContainer = carouselContainer.querySelector('.absolute.bottom-4');
-        var slideCount = slides.length;
-        var currentIndex = 0;
-        var interval;
+        const carouselContainer = document.querySelector('.carousel-container');
+        const track = document.querySelector('.carousel-track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = carouselContainer.querySelector('.carousel-control:first-of-type');
+        const nextBtn = carouselContainer.querySelector('.carousel-control:last-of-type');
+        const indicatorsContainer = carouselContainer.querySelector('.absolute.bottom-4');
+        const slideCount = slides.length;
+        let currentIndex = 0;
+        let interval;
 
         // 创建指示器
-        for (var i = 0; i < slides.length; i++) {
-            var indicator = document.createElement('div');
+        slides.forEach((_, index) => {
+            const indicator = document.createElement('div');
             indicator.classList.add('carousel-indicator');
-            if (i === 0) indicator.classList.add('active');
-            (function(index) {
-                indicator.addEventListener('click', function() {
-                    goToSlide(index);
-                });
-            })(i);
+            if (index === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => goToSlide(index));
             indicatorsContainer.appendChild(indicator);
-        }
-        var indicators = document.querySelectorAll('.carousel-indicator');
+        });
+        const indicators = document.querySelectorAll('.carousel-indicator');
 
         // 轮播到指定幻灯片
         function goToSlide(index) {
@@ -680,15 +665,15 @@
             if (currentIndex < 0) currentIndex = slideCount - 1;
             if (currentIndex >= slideCount) currentIndex = 0;
 
-            track.style.transform = 'translateX(-' + currentIndex * 100 + '%)';
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-            for (var j = 0; j < indicators.length; j++) {
-                if (j === currentIndex) {
-                    indicators[j].classList.add('active');
+            indicators.forEach((indicator, i) => {
+                if (i === currentIndex) {
+                    indicator.classList.add('active');
                 } else {
-                    indicators[j].classList.remove('active');
+                    indicator.classList.remove('active');
                 }
-            }
+            });
         }
 
         // 下一张
@@ -714,13 +699,13 @@
         }
 
         // 事件监听
-        nextBtn.addEventListener('click', function() {
+        nextBtn.addEventListener('click', () => {
             stopAutoPlay();
             nextSlide();
             startAutoPlay();
         });
 
-        prevBtn.addEventListener('click', function() {
+        prevBtn.addEventListener('click', () => {
             stopAutoPlay();
             prevSlide();
             startAutoPlay();
@@ -729,23 +714,23 @@
         carouselContainer.addEventListener('mouseenter', stopAutoPlay);
         carouselContainer.addEventListener('mouseleave', startAutoPlay);
 
-        // 触摸滑动支持（移除passive）
-        var touchStartX = 0;
-        var touchEndX = 0;
+        // 触摸滑动支持
+        let touchStartX = 0;
+        let touchEndX = 0;
 
-        carouselContainer.addEventListener('touchstart', function(e) {
+        carouselContainer.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
             stopAutoPlay();
-        });
+        }, { passive: true });
 
-        carouselContainer.addEventListener('touchend', function(e) {
+        carouselContainer.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
             startAutoPlay();
-        });
+        }, { passive: true });
 
         function handleSwipe() {
-            var swipeThreshold = 50;
+            const swipeThreshold = 50;
             if (touchEndX - touchStartX > swipeThreshold) {
                 prevSlide();
             } else if (touchStartX - touchEndX > swipeThreshold) {
@@ -757,7 +742,7 @@
     }
 
     // 商品数据
-    var productData = {
+    const productData = {
         cake: [
             { id: 2, name: "福寿绵长蛋糕", desc: "爱不用翻山越岭，孝心也不用飘洋过海，一个蛋糕足以表达，愿您幸福安宁常在", price: 268, category: "cake", subcategory: "celebration",
                 imgUrl: "images/福寿绵长—祝寿类.jpg" },
@@ -813,10 +798,10 @@
         ]
     };
 
-    // 核心优化：图片缓存池（改用普通对象）
-    var imageCache = {};
+    // 核心优化：图片缓存池
+    const imageCache = new Map();
     // 核心优化：分页状态管理
-    var state = {
+    const state = {
         currentCategory: 'all',
         currentCakeSubcategory: 'all',
         currentCoffeeSubcategory: 'all',
@@ -826,47 +811,47 @@
         isLoading: false,
         allProducts: [],
         filteredProducts: [],
-        loadedProductIds: {} // 已加载的商品ID缓存（改用对象）
+        loadedProductIds: new Set() // 已加载的商品ID缓存
     };
 
     // 初始化所有商品数据
     function initAllProducts() {
-        state.allProducts = [].concat(
-            productData.cake,
-            productData.coffee,
-            productData.afternoon
-        );
-        state.filteredProducts = [].concat(state.allProducts);
+        state.allProducts = [
+            ...productData.cake,
+            ...productData.coffee,
+            ...productData.afternoon
+        ];
+        state.filteredProducts = [...state.allProducts];
     }
 
     // 核心优化：图片预加载与缓存
     function preloadImage(url) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             // 如果已缓存，直接返回
-            if (imageCache[url]) {
-                resolve(imageCache[url]);
+            if (imageCache.has(url)) {
+                resolve(imageCache.get(url));
                 return;
             }
 
-            var img = new Image();
+            const img = new Image();
             img.src = url;
-            img.onload = function() {
-                imageCache[url] = img;
+            img.onload = () => {
+                imageCache.set(url, img);
                 resolve(img);
             };
-            img.onerror = function(err) {
+            img.onerror = (err) => {
                 reject(err);
             };
         });
     }
 
-    // 核心优化：创建商品卡片（使用原生懒加载）
+    // 核心优化：创建商品卡片（使用懒加载图片）
     function createProductCard(product) {
         // 标记已加载的商品
-        state.loadedProductIds[product.id] = true;
+        state.loadedProductIds.add(product.id);
 
-        var tagText = '';
-        var tagBg = '';
+        let tagText = '';
+        let tagBg = '';
 
         // 咖啡子类标签
         if (product.category === 'coffee') {
@@ -886,25 +871,16 @@
         }
         // 蛋糕标签（新增水果系列标签样式）
         else if (product.category === 'cake') {
-            if (product.subcategory === 'birthday') {
-                tagText = '异形定制';
-                tagBg = 'bg-accent';
-            } else if (product.subcategory === 'celebration') {
-                tagText = '福寿绵长';
-                tagBg = 'bg-secondary';
-            } else if (product.subcategory === 'cartoon') {
-                tagText = '小熊奥奥';
-                tagBg = 'bg-primary';
-            } else if (product.subcategory === 'chestnut') {
-                tagText = '栗子季坚果';
-                tagBg = 'bg-amber-500';
-            } else if (product.subcategory === 'fruit') {
-                tagText = '水果系列';
-                tagBg = 'bg-green-500';
-            } else {
-                tagText = '蛋糕系列';
-                tagBg = 'bg-primary';
-            }
+            tagText = product.subcategory === 'birthday' ? '异形定制' :
+                product.subcategory === 'celebration' ? '福寿绵长' :
+                    product.subcategory === 'cartoon' ? '小熊奥奥' :
+                        product.subcategory === 'chestnut' ? '栗子季坚果' :
+                            product.subcategory === 'fruit' ? '水果系列' : '蛋糕系列';
+            tagBg = product.subcategory === 'birthday' ? 'bg-accent' :
+                product.subcategory === 'celebration' ? 'bg-secondary' :
+                    product.subcategory === 'cartoon' ? 'bg-primary' :
+                        product.subcategory === 'chestnut' ? 'bg-amber-500' :
+                            product.subcategory === 'fruit' ? 'bg-green-500' : 'bg-primary';
         }
         // 下午茶标签
         else if (product.category === 'afternoon') {
@@ -915,28 +891,32 @@
             tagBg = 'bg-accent';
         }
 
-        var imgSrc = product.imgUrl;
+        const imgSrc = product.imgUrl;
+        const placeholder = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 
-        return '<div class="product-card card-hover shadow-soft rounded-2xl overflow-hidden bg-white" data-category="' + product.category + '" data-subcategory="' + (product.subcategory || 'all') + '">' +
-            '<div class="relative overflow-hidden h-48 sm:h-56 lg:h-64">' +
-            '<img src="' + imgSrc + '"' +
-            '     alt="' + product.name + '"' +
-            '     class="w-full h-full object-cover transition-transform duration-500 hover:scale-110 product-img"' +
-            '     data-img="' + imgSrc + '"' +
-            '     loading="lazy"' +
-            '     onerror="this.onerror=null; this.src=\'./images/default-img.jpg\';">' +
-            '<div class="absolute top-3 right-3 ' + tagBg + ' text-white text-xs sm:text-sm font-medium px-2.5 py-1 rounded-full">' +
-            tagText +
-            '</div>' +
-            '</div>' +
-            '<div class="p-4 sm:p-6">' +
-            '<h3 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2">' + product.name + '</h3>' +
-            '<p class="text-dark/70 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">' + product.desc + '</p>' +
-            '</div>' +
-            '</div>';
+        return `
+            <div class="product-card card-hover shadow-soft rounded-2xl overflow-hidden bg-white" data-category="${product.category}" data-subcategory="${product.subcategory || 'all'}">
+                <div class="relative overflow-hidden h-48 sm:h-56 lg:h-64">
+                    <img src="${placeholder}"
+                         data-src="${imgSrc}"
+                         alt="${product.name}"
+                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110 product-img img-placeholder"
+                         data-img="${imgSrc}"
+                         crossorigin="anonymous"
+                         onerror="this.onerror=null; this.src='./images/default-img.jpg';">
+                    <div class="absolute top-3 right-3 ${tagBg} text-white text-xs sm:text-sm font-medium px-2.5 py-1 rounded-full">
+                        ${tagText}
+                    </div>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2">${product.name}</h3>
+                    <p class="text-dark/70 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">${product.desc}</p>
+                </div>
+            </div>
+        `;
     }
 
-    // 加载商品
+    // 补充完整loadProducts函数
     function loadProducts() {
         if (state.isLoading) return;
 
@@ -944,96 +924,75 @@
         document.getElementById('loadMoreBtn').classList.add('hidden');
         document.getElementById('loadingSpinner').classList.remove('hidden');
 
-        setTimeout(function() {
-            var startIndex = (state.currentPage - 1) * state.pageSize;
-            var endIndex = startIndex + state.pageSize;
-            var productsToLoad = state.filteredProducts.slice(startIndex, endIndex);
+        setTimeout(async () => {
+            const startIndex = (state.currentPage - 1) * state.pageSize;
+            const endIndex = startIndex + state.pageSize;
+            const productsToLoad = state.filteredProducts.slice(startIndex, endIndex);
 
-            var productGrid = document.getElementById('productGrid');
+            const productGrid = document.getElementById('productGrid');
 
             // 预加载图片并缓存
-            var preloadPromises = [];
-            for (var i = 0; i < productsToLoad.length; i++) {
-                var product = productsToLoad[i];
-                preloadPromises.push(preloadImage(product.imgUrl).catch(function(err) {
-                    console.log('图片预加载失败', err);
-                }));
+            for (const product of productsToLoad) {
+                try {
+                    await preloadImage(product.imgUrl);
+                } catch (err) {
+                    console.log(`图片预加载失败: ${product.imgUrl}`, err);
+                }
+                productGrid.innerHTML += createProductCard(product);
             }
 
-            Promise.all(preloadPromises).then(function() {
-                // 所有图片预加载完成后渲染卡片
-                for (var j = 0; j < productsToLoad.length; j++) {
-                    var product = productsToLoad[j];
-                    productGrid.innerHTML += createProductCard(product);
-                }
+            // 执行懒加载
+            lazyLoadImages();
+            // 为新加载的商品图片绑定放大事件
+            bindImagePreviewEvents();
 
-                // 为新加载的商品图片绑定放大事件
-                bindImagePreviewEvents();
+            const hasMore = endIndex < state.filteredProducts.length;
+            if (!hasMore) {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                document.getElementById('loadMoreBtn').classList.remove('hidden');
+                document.getElementById('loadMoreBtn').innerHTML = '已加载全部商品';
+                document.getElementById('loadMoreBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('loadMoreBtn').disabled = true;
+            } else {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                document.getElementById('loadMoreBtn').classList.remove('hidden');
+            }
 
-                var hasMore = endIndex < state.filteredProducts.length;
-                if (!hasMore) {
-                    document.getElementById('loadingSpinner').classList.add('hidden');
-                    document.getElementById('loadMoreBtn').classList.remove('hidden');
-                    document.getElementById('loadMoreBtn').innerHTML = '已加载全部商品';
-                    document.getElementById('loadMoreBtn').classList.add('opacity-50', 'cursor-not-allowed');
-                    document.getElementById('loadMoreBtn').disabled = true;
-                } else {
-                    document.getElementById('loadingSpinner').classList.add('hidden');
-                    document.getElementById('loadMoreBtn').classList.remove('hidden');
-                }
-
-                state.currentPage++;
-                state.isLoading = false;
-            });
+            state.currentPage++;
+            state.isLoading = false;
         }, 800);
     }
 
-    // 筛选商品
     function filterProducts() {
-        var filtered = [];
+        let filtered = [];
 
         if (state.currentCategory === 'all') {
-            filtered = [].concat(state.allProducts);
+            filtered = [...state.allProducts];
         } else if (state.currentCategory === 'cake') {
             if (state.currentCakeSubcategory === 'all') {
-                filtered = [].concat(productData.cake);
+                filtered = [...productData.cake];
             } else {
-                filtered = [];
-                for (var i = 0; i < productData.cake.length; i++) {
-                    if (productData.cake[i].subcategory === state.currentCakeSubcategory) {
-                        filtered.push(productData.cake[i]);
-                    }
-                }
+                filtered = productData.cake.filter(item => item.subcategory === state.currentCakeSubcategory);
             }
         } else if (state.currentCategory === 'coffee') {
             if (state.currentCoffeeSubcategory === 'all') {
-                filtered = [].concat(productData.coffee);
+                filtered = [...productData.coffee];
             } else {
-                filtered = [];
-                for (var j = 0; j < productData.coffee.length; j++) {
-                    if (productData.coffee[j].subcategory === state.currentCoffeeSubcategory) {
-                        filtered.push(productData.coffee[j]);
-                    }
-                }
+                filtered = productData.coffee.filter(item => item.subcategory === state.currentCoffeeSubcategory);
             }
         } else if (state.currentCategory === 'afternoon') {
             if (state.currentAfternoonSubcategory === 'all') {
-                filtered = [].concat(productData.afternoon);
+                filtered = [...productData.afternoon];
             } else {
-                filtered = [];
-                for (var k = 0; k < productData.afternoon.length; k++) {
-                    if (productData.afternoon[k].subcategory === state.currentAfternoonSubcategory) {
-                        filtered.push(productData.afternoon[k]);
-                    }
-                }
+                filtered = productData.afternoon.filter(item => item.subcategory === state.currentAfternoonSubcategory);
             }
         } else {
-            filtered = [].concat(productData[state.currentCategory]);
+            filtered = [...productData[state.currentCategory]];
         }
 
         state.filteredProducts = filtered;
         state.currentPage = 1;
-        state.loadedProductIds = {}; // 重置已加载商品ID缓存
+        state.loadedProductIds.clear(); // 重置已加载商品ID缓存
 
         document.getElementById('productGrid').innerHTML = '';
 
@@ -1044,21 +1003,19 @@
         loadProducts();
     }
 
-    // 绑定分类筛选事件
     function bindCategoryEvents() {
         // 一级分类事件
-        var categoryBtns = document.querySelectorAll('.product-category-btn');
-        for (var i = 0; i < categoryBtns.length; i++) {
-            var btn = categoryBtns[i];
-            btn.addEventListener('click', function() {
-                for (var j = 0; j < categoryBtns.length; j++) {
-                    categoryBtns[j].classList.remove('active', 'bg-accent', 'text-white');
-                    categoryBtns[j].classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
-                }
-                this.classList.add('active', 'bg-accent', 'text-white');
-                this.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+        const categoryBtns = document.querySelectorAll('.product-category-btn');
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-accent', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-accent', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
 
-                state.currentCategory = this.getAttribute('data-category');
+                state.currentCategory = btn.getAttribute('data-category');
 
                 // 显示对应子类筛选栏
                 if (state.currentCategory === 'cake') {
@@ -1081,92 +1038,88 @@
 
                 filterProducts();
             });
-        }
+        });
 
         // 蛋糕子类事件（新增水果系列筛选逻辑）
-        var cakeSubcategoryBtns = document.querySelectorAll('.cake-subcategory-btn');
-        for (var m = 0; m < cakeSubcategoryBtns.length; m++) {
-            var cakeBtn = cakeSubcategoryBtns[m];
-            cakeBtn.addEventListener('click', function() {
-                for (var n = 0; n < cakeSubcategoryBtns.length; n++) {
-                    cakeSubcategoryBtns[n].classList.remove('active', 'bg-secondary', 'text-white');
-                    cakeSubcategoryBtns[n].classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
-                }
-                this.classList.add('active', 'bg-secondary', 'text-white');
-                this.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+        const cakeSubcategoryBtns = document.querySelectorAll('.cake-subcategory-btn');
+        cakeSubcategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                cakeSubcategoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-secondary', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-secondary', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
 
-                state.currentCakeSubcategory = this.getAttribute('data-subcategory');
+                state.currentCakeSubcategory = btn.getAttribute('data-subcategory');
                 filterProducts();
             });
-        }
+        });
 
         // 咖啡子类事件
-        var coffeeSubcategoryBtns = document.querySelectorAll('.coffee-subcategory-btn');
-        for (var p = 0; p < coffeeSubcategoryBtns.length; p++) {
-            var coffeeBtn = coffeeSubcategoryBtns[p];
-            coffeeBtn.addEventListener('click', function() {
-                for (var q = 0; q < coffeeSubcategoryBtns.length; q++) {
-                    coffeeSubcategoryBtns[q].classList.remove('active', 'bg-secondary', 'text-white');
-                    coffeeSubcategoryBtns[q].classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
-                }
-                this.classList.add('active', 'bg-secondary', 'text-white');
-                this.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+        const coffeeSubcategoryBtns = document.querySelectorAll('.coffee-subcategory-btn');
+        coffeeSubcategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                coffeeSubcategoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-secondary', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-secondary', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
 
-                state.currentCoffeeSubcategory = this.getAttribute('data-subcategory');
+                state.currentCoffeeSubcategory = btn.getAttribute('data-subcategory');
                 filterProducts();
             });
-        }
+        });
 
         // 下午茶子类事件
-        var afternoonSubcategoryBtns = document.querySelectorAll('.afternoon-subcategory-btn');
-        for (var r = 0; r < afternoonSubcategoryBtns.length; r++) {
-            var afternoonBtn = afternoonSubcategoryBtns[r];
-            afternoonBtn.addEventListener('click', function() {
-                for (var s = 0; s < afternoonSubcategoryBtns.length; s++) {
-                    afternoonSubcategoryBtns[s].classList.remove('active', 'bg-secondary', 'text-white');
-                    afternoonSubcategoryBtns[s].classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
-                }
-                this.classList.add('active', 'bg-secondary', 'text-white');
-                this.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+        const afternoonSubcategoryBtns = document.querySelectorAll('.afternoon-subcategory-btn');
+        afternoonSubcategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                afternoonSubcategoryBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-secondary', 'text-white');
+                    b.classList.add('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
+                });
+                btn.classList.add('active', 'bg-secondary', 'text-white');
+                btn.classList.remove('bg-white', 'text-dark', 'hover:bg-gray-50', 'border', 'border-gray-100');
 
-                state.currentAfternoonSubcategory = this.getAttribute('data-subcategory');
+                state.currentAfternoonSubcategory = btn.getAttribute('data-subcategory');
                 filterProducts();
             });
-        }
+        });
 
         // 加载更多按钮事件
         document.getElementById('loadMoreBtn').addEventListener('click', loadProducts);
     }
 
-    // 图片预览核心功能（兼容iOS）
+    // 图片预览核心功能（新增）
     function bindImagePreviewEvents() {
-        var previewModal = document.getElementById('imgPreviewModal');
-        var previewImg = document.getElementById('previewImg');
-        var closePreview = document.getElementById('closePreview');
+        const previewModal = document.getElementById('imgPreviewModal');
+        const previewImg = document.getElementById('previewImg');
+        const closePreview = document.getElementById('closePreview');
 
         // 所有可放大的图片（商品图、轮播图、关于我们的图片、二维码）
-        var zoomableImages = document.querySelectorAll('.product-img, .carousel-img, .gallery-img');
+        const zoomableImages = document.querySelectorAll('.product-img, .carousel-img, .gallery-img');
 
-        for (var i = 0; i < zoomableImages.length; i++) {
-            var img = zoomableImages[i];
-            img.addEventListener('click', function() {
-                var imgSrc = this.getAttribute('data-img') || this.src;
+        zoomableImages.forEach(img => {
+            img.addEventListener('click', () => {
+                const imgSrc = img.getAttribute('data-img') || img.src;
                 previewImg.src = imgSrc;
-                previewImg.alt = this.alt;
+                previewImg.alt = img.alt;
                 previewModal.classList.add('active');
                 // 禁止页面滚动
                 document.body.style.overflow = 'hidden';
             });
-        }
+        });
 
         // 关闭预览
-        closePreview.addEventListener('click', function() {
+        closePreview.addEventListener('click', () => {
             previewModal.classList.remove('active');
             document.body.style.overflow = 'auto';
         });
 
         // 点击遮罩层关闭
-        previewModal.addEventListener('click', function(e) {
+        previewModal.addEventListener('click', (e) => {
             if (e.target === previewModal) {
                 previewModal.classList.remove('active');
                 document.body.style.overflow = 'auto';
@@ -1174,11 +1127,58 @@
         });
 
         // 键盘ESC关闭
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && previewModal.classList.contains('active')) {
                 previewModal.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
+        });
+    }
+
+    // 核心优化：图片懒加载实现
+    function lazyLoadImages() {
+        const lazyImages = document.querySelectorAll('img[data-src]');
+
+        // 检查图片是否在可视区域
+        const isInViewport = (el) => {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) + 100 &&
+                rect.bottom >= 0 &&
+                rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
+                rect.right >= 0
+            );
+        };
+
+        // 加载可视区域内的图片
+        const loadImage = (img) => {
+            if (img.hasAttribute('data-src')) {
+                const src = img.getAttribute('data-src');
+                // 从缓存中获取图片
+                if (imageCache.has(src)) {
+                    img.src = imageCache.get(src).src;
+                } else {
+                    img.src = src;
+                }
+                img.removeAttribute('data-src');
+                img.classList.remove('img-placeholder');
+            }
+        };
+
+        // 初始化加载可视区域图片
+        lazyImages.forEach(img => {
+            if (isInViewport(img)) {
+                loadImage(img);
+            }
+        });
+
+        // 滚动时加载图片
+        window.addEventListener('scroll', () => {
+            lazyImages.forEach(img => {
+                if (isInViewport(img) && img.hasAttribute('data-src')) {
+                    loadImage(img);
+                }
+            });
         });
     }
 
@@ -1189,12 +1189,12 @@
         bindCategoryEvents();
         filterProducts();
         // 初始化时绑定已有图片的放大事件
-        setTimeout(function() {
+        setTimeout(() => {
             bindImagePreviewEvents();
+            lazyLoadImages();
         }, 100);
     }
 
-    // 页面加载完成后初始化
     window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
