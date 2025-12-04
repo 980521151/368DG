@@ -174,7 +174,7 @@
 </head>
 <body class="font-inter bg-neutral text-dark overflow-x-hidden touch-manipulation">
 
-<!-- 图片预览弹窗-->
+<!-- 图片预览弹窗（核心新增） -->
 <div class="img-preview-modal" id="imgPreviewModal">
     <span class="close-preview" id="closePreview"><i class="fa fa-times"></i></span>
     <img src="" alt="预览图" class="preview-img" id="previewImg">
@@ -241,7 +241,7 @@
                 </div>
             </div>
 
-            <!-- 轮播图（原生懒加载 + iOS兼容） -->
+            <!-- 轮播图（改用原生懒加载 + iOS兼容） -->
             <div class="lg:w-1/2 w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-2xl shadow-soft overflow-hidden border border-gray-100">
                 <div class="carousel-container w-full h-full">
                     <div class="carousel-track h-full">
@@ -331,28 +331,25 @@
             </button>
         </div>
 
-        <!-- 蛋糕子类筛选-->
+        <!-- 蛋糕子类筛选（新增水果系列菜单） -->
         <div id="cakeSubcategory" class="flex gap-2 sm:gap-3 mb-6 sm:mb-10 overflow-x-auto scrollbar-hide pb-2 hidden">
             <button class="cake-subcategory-btn active bg-secondary text-white px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all whitespace-nowrap touch-active" data-subcategory="all">
                 全部蛋糕
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="birthday">
+                异形定制
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="celebration">
+                福寿绵长
+            </button>
+            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="cartoon">
+                小熊奥奥
             </button>
             <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="chestnut">
                 栗子季坚果
             </button>
             <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="fruit">
                 水果系列
-            </button>
-            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="flower">
-                鲜花系列
-            </button>
-            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="birthday">
-                异形定制
-            </button>
-            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="cartoon">
-                插件童趣
-            </button>
-            <button class="cake-subcategory-btn bg-white text-dark hover:bg-gray-50 px-3 sm:px-4 py-1.5 rounded-full text-sm shadow-soft transition-all border border-gray-100 whitespace-nowrap touch-active" data-subcategory="celebration">
-                福寿绵长
             </button>
         </div>
 
@@ -401,7 +398,7 @@
     </div>
 </section>
 
-<!-- 关于我们（原生懒加载） -->
+<!-- 关于我们（改用原生懒加载） -->
 <section id="about" class="py-12 sm:py-20 bg-neutral relative overflow-hidden">
     <div class="container mx-auto px-3 sm:px-4 relative z-10">
         <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-12">
@@ -471,7 +468,7 @@
     <div class="absolute bottom-5 -left-5 w-40 h-40 sm:w-60 sm:h-60 bg-secondary/10 rounded-full blur-3xl"></div>
 </section>
 
-<!-- 联系我们-->
+<!-- 联系我们（改用原生懒加载） -->
 <section id="contact" class="py-12 sm:py-20 bg-white">
     <div class="container mx-auto px-3 sm:px-4">
         <div class="text-center mb-8 sm:mb-16">
@@ -749,116 +746,61 @@
     // 商品数据
     var productData = {
         cake: [
-            //栗子季坚果
-            { id: 1, name: "坚果栗子蛋糕", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬",  category: "cake", subcategory: "chestnut",
-                imgUrl: "images/坚果栗子.jpg"},
-            { id: 2, name: "核桃栗子蛋糕", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬",  category: "cake", subcategory: "chestnut",
-                imgUrl: "images/核桃栗子.jpg"},
-            { id: 3, name: "小栗蛋糕", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬",  category: "cake", subcategory: "chestnut",
-                imgUrl: "images/小栗蛋糕.jpg"},
-            //水果系列
-            { id: 4, name: "芭乐芒芒蛋糕", desc: "新鲜水果搭配动物奶油，酸甜多汁，每一口都是春日清新感",  category: "cake", subcategory: "fruit",
-                imgUrl: "images/芭乐芒芒.jpg"},
-            { id: 5, name: "鲜果蜜漾蛋糕", desc: "奶白糕身裹着柔黄糖霜流心，青提与芒果圈出清甜的圆，柠檬片衬着莓果香，每一口都是鲜果裹满奶油的清爽甜润",  category: "cake", subcategory: "fruit",
-                imgUrl: "images/鲜果蜜漾.jpg"},
-            { id: 6, name: "莓果甜圆蛋糕", desc: "乳白奶油托着满圈鲜切草莓，蓝莓与芒果块裹着软绵甜香，连奶油花的纹路里都浸着鲜果的清爽气息",  category: "cake", subcategory: "fruit",
-                imgUrl: "images/莓果甜圆.jpg"},
-            { id: 7, name: "莓甜星愿蛋糕", desc: "奶白糕身裹着粉糖碎星，草莓与蓝莓卧在柔奶油里，把清甜都揉进了温柔的甜意中",  category: "cake", subcategory: "fruit",
-                imgUrl: "images/莓甜星愿.jpg"},
-            { id: 8, name: "果系森甜蛋糕", desc: "奶白糕身裹着麻绳与鲜叶，芒果块混着莓果铺成甜润的圆，连小饼干都裹着鲜果的清爽香气",  category: "cake", subcategory: "fruit",
-                imgUrl: "images/果系森甜.jpg"},
-            { id: 9, name: "双层果甜蛋糕", desc: "两层软绵奶糕裹满鲜草莓与芒果块，莓果的清甜裹着奶油香，每一层都堆着鲜果的饱满甜意",  category: "cake", subcategory: "fruit",
-                imgUrl: "images/双层果甜.jpg"},
-            //异形定制
-            { id: 10, name: "小清心水果蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", category: "cake", subcategory: "birthday",
-                imgUrl: "images/小清心水果蛋糕.jpg"},
-            { id: 11, name: "秘密花园蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧",  category: "cake", subcategory: "birthday",
-                imgUrl: "images/秘密花园.jpg"},
-            { id: 12, name: "应援蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧",  category: "cake", subcategory: "birthday",
-                imgUrl: "images/应援蛋糕2.png"},
-            { id: 13, name: "粉贝柔玫蛋糕", desc: "粉白奶油裹着鎏金贝壳与柔粉玫瑰，半缺的甜软里藏着小天使的轻语，连空气都浸着温柔的甜香",  category: "cake", subcategory: "birthday",
-                imgUrl: "images/粉贝柔玫.jpg"},
-            { id: 14, name: "心甜萌意蛋糕", desc: "红白奶油裹着软乎乎的笑脸，小爱心与圆巧克点缀其间，连缺角的甜都裹着俏皮的温柔",  category: "cake", subcategory: "birthday",
-                imgUrl: "images/心甜萌意.jpg"},
-            { id: 15, name: "星梦云甜蛋糕", desc: "粉蓝渐变的奶油裹满鎏金星芒，缺角处露出的甜软里藏着星星形的精巧纹路，像把童话里的星空揉进了松软的甜香",  category: "cake", subcategory: "birthday",
-                imgUrl: "images/星梦云甜.jpg"},
-            { id: 16, name: "紫玫心苑蛋糕", desc: "奶白糕身缀着银纹卷涡，粉紫玫瑰簇拥成心型甜巢，鎏金珠串裹着柔香，像把浪漫揉进了每一缕奶油的软绵里",  category: "cake", subcategory: "birthday",
-                imgUrl: "images/紫玫心苑.jpg"},
-            //插件童趣
-            { id: 17, name: "小熊奥巧蛋糕", desc: "奥利奥搭配可爱小熊饼干，绵密里裹着酥脆，甜而不腻的温柔感直接拿捏",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/小熊奥巧.jpg"},
-            { id: 18, name: "小熊奥巧蛋糕", desc: "奥利奥搭配可爱小熊饼干，绵密里裹着酥脆，甜而不腻的温柔感直接拿捏",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/小熊奥巧2.png"},
-            { id: 19, name: "星梦小王子蛋糕", desc: "软乎乎的奶油裹满细碎星光，小王子趴在云朵旁枕着月牙，连空气都浸着童话里的温柔甜意",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/星梦小王子.jpg"},
-            { id: 20, name: "浪屿星贝蛋糕", desc: "奶油晕开的蓝浪裹着细碎光斑，贝壳与海星卧在甜软的 “沙滩” 边，连海风的气息都浸着糖香",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/浪屿星贝.jpg"},
-            { id: 21, name: "兔甜星愿蛋糕", desc: "软乎乎的奶油裹满圆滚滚的小兔与脆甜 “胡萝卜”，星星牌上的笑脸把甜意都揉进了可爱里",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/兔甜星愿.jpg"},
-            { id: 22, name: "彩球生欢蛋糕", desc: "奶黄糕身缀满甜奶油花，彩气球与糖果花裹着明亮的甜，“12” 的字样里藏着满溢的生日欢喜",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/彩球生欢.jpg"},
-            { id: 23, name: "诞韵双甜蛋糕", desc: "奶白糕身裹着红绿缎带，圣诞花环与小铃铛浸着暖甜，双份的节日甜意裹满了冬季节日的温柔氛围",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/诞韵双甜.jpg"},
-            { id: 24, name: "暖诞甜冬蛋糕", desc: "软绵的奶油裹着红白绒边，圣诞老人与雪人藏在甜香里，连空气都浸着圣诞季的暖甜氛围",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/暖诞甜冬.jpg"},
-            { id: 25, name: "星航甜梦蛋糕", desc: "蓝白糕身裹着银星与星球，宇航员立在甜软之上，火箭与飞船载着星际的奇趣，把宇宙的浪漫揉进了奶油的甜香里",  category: "cake", subcategory: "cartoon",
-                imgUrl: "images/星航甜梦.jpg"},
-            //福寿绵长
-            { id: 26, name: "福寿绵长蛋糕", desc: "爱不用翻山越岭，孝心也不用飘洋过海，一个蛋糕足以表达，愿您幸福安宁常在",  category: "cake", subcategory: "celebration",
+            { id: 2, name: "福寿绵长蛋糕", desc: "爱不用翻山越岭，孝心也不用飘洋过海，一个蛋糕足以表达，愿您幸福安宁常在", price: 268, category: "cake", subcategory: "celebration",
                 imgUrl: "images/福寿绵长—祝寿类.jpg" },
-            { id: 27, name: "鹤寿福臻蛋糕", desc: "仙鹤伴青松、石榴载吉意，笑眼寿星翁立在云间，把安康长寿的祈愿都融在了甜香里",  category: "cake", subcategory: "celebration",
-                imgUrl: "images/鹤寿福臻.jpg" },
-            { id: 28, name: "寿桃福韵蛋糕", desc: "捧桃的笑面寿星立在红扇下，鲜果与金荷裹着甜意，把福寿安康的祈愿都揉进了松软里",  category: "cake", subcategory: "celebration",
-                imgUrl: "images/寿桃福韵.jpg" },
-            { id: 29, name: "福寿金辰蛋糕", desc: "奶白糕身裹着鎏金云纹，寿桃配牡丹，把寿辰的吉庆与甜意都揉进了暖融的欢喜里",  category: "cake", subcategory: "celebration",
-                imgUrl: "images/福寿金辰.jpg" },
-            { id: 30, name: "鹤寿盈堂蛋糕", desc: "奶白糕身裹着朱红瓣纹，仙鹤伴寿星、福牌衬金饰，把 “健康长寿” 的祈愿揉进了暖红甜香里",  category: "cake", subcategory: "celebration",
-                imgUrl: "images/鹤寿盈堂.jpg" },
-            { id: 31, name: "紫韵添寿蛋糕", desc: "柔紫糕身缀着鎏金云纹，笑面寿星卧在鲜果甜意里，红扇衬着 “寿” 字，把安康的祈愿裹进了温柔的甜香中",  category: "cake", subcategory: "celebration",
-                imgUrl: "images/紫韵添寿.jpg" },
-            { id: 32, name: "红韵福甜蛋糕", desc: "朱红糕身裹着鎏金珠边，亮金 “福” 字衬着白瓣甜花，樱桃的红意裹满了吉庆的甜香",  category: "cake", subcategory: "celebration",
-                imgUrl: "images/红韵福甜.jpg" },
-            { id: 45, name: "白玫雅缎蛋糕", desc: "双层乳白糕身束着柔金缎带，鲜白玫瑰缀着珍珠甜意，把清冷的优雅裹进了奶油的软绵香里", category: "cake", subcategory: "flower",
-                imgUrl: "images/白玫雅缎.jpg"},
-            { id: 46, name: "粉玫柔甜蛋糕", desc: "粉白晕染的糕身缀着珍珠，柔粉玫瑰裹着甜润的奶油香，带都浸着温柔的甜意", category: "cake", subcategory: "flower",
-                imgUrl: "images/粉玫柔甜.jpg"},
-            { id: 47, name: "金带玫仪蛋糕", desc: "乳白糕身束着鎏金缎带，粉白玫瑰裹着柔香，银烛台衬着花瓣，把优雅的浪漫揉进了奶油的软绵里", category: "cake", subcategory: "flower",
-                imgUrl: "images/金带玫仪.jpg"},
+            { id: 3, name: "小熊奥巧蛋糕", desc: "奥利奥搭配可爱小熊饼干，绵密里裹着酥脆，甜而不腻的温柔感直接拿捏", price: 188, category: "cake", subcategory: "cartoon",
+                imgUrl: "images/小熊奥巧.jpg"},
+            { id: 5, name: "小熊奥巧蛋糕", desc: "奥利奥搭配可爱小熊饼干，绵密里裹着酥脆，甜而不腻的温柔感直接拿捏", price: 238, category: "cake", subcategory: "cartoon",
+                imgUrl: "images/小熊奥巧2.png"},
+            { id: 1, name: "小清心水果蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", price: 198, category: "cake", subcategory: "birthday",
+                imgUrl: "images/小清心水果蛋糕.jpg"},
+            { id: 4, name: "秘密花园蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", price: 228, category: "cake", subcategory: "birthday",
+                imgUrl: "images/秘密花园.jpg"},
+            { id: 6, name: "应援蛋糕", desc: "您还在为挑选不到满意的蛋糕而苦恼吗，不妨联系我们定制您独一无二的专属蛋糕吧", price: 218, category: "cake", subcategory: "birthday",
+                imgUrl: "images/应援蛋糕2.png"},
+            { id: 7, name: "坚果栗子", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬", price: 258, category: "cake", subcategory: "chestnut",
+                imgUrl: "images/坚果栗子.jpg"},
+            { id: 8, name: "核桃栗子", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬", price: 228, category: "cake", subcategory: "chestnut",
+                imgUrl: "images/核桃栗子.jpg"},
+            { id: 9, name: "小栗蛋糕", desc: "浓香的坚果搭配栗子奶油，让这份甜蜜温暖您整个秋冬", price: 248, category: "cake", subcategory: "chestnut",
+                imgUrl: "images/小栗蛋糕.jpg"},
+            { id: 10, name: "芭乐芒芒", desc: "新鲜水果搭配动物奶油，酸甜多汁，每一口都是春日清新感", price: 258, category: "cake", subcategory: "fruit",
+                imgUrl: "images/芭乐芒芒.jpg"}
         ],
         coffee: [
             // 经典咖啡
-            { id: 33, name: "经典拿铁", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈",  category: "coffee", subcategory: "classic",
+            { id: 19, name: "经典拿铁", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈", price: 32, category: "coffee", subcategory: "classic",
                 imgUrl: "images/经典拿铁.jpg"},
-            { id: 34, name: "经典美式", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈",  category: "coffee", subcategory: "classic",
+            { id: 20, name: "经典美式", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈", price: 36, category: "coffee", subcategory: "classic",
                 imgUrl: "images/经典美式.jpg"},
-            { id: 35, name: "经典摩卡", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈",  category: "coffee", subcategory: "classic",
+            { id: 21, name: "经典摩卡", desc: "现磨咖啡豆释放本真风味，每一口都是时光沉淀的浓香治愈", price: 28, category: "coffee", subcategory: "classic",
                 imgUrl: "images/经典摩卡.jpg"},
             // 特色咖啡
-            { id: 36, name: "生椰拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜",  category: "coffee", subcategory: "special",
+            { id: 22, name: "生椰拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 34, category: "coffee", subcategory: "special",
                 imgUrl: "images/生椰拿铁2.png"},
-            { id: 37, name: "焦糖卡美罗拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜",  category: "coffee", subcategory: "special",
+            { id: 23, name: "焦糖卡美罗拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 35, category: "coffee", subcategory: "special",
                 imgUrl: "images/焦糖卡美罗拿铁.jpg"},
-            { id: 38, name: "抹茶拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜",  category: "coffee", subcategory: "special",
+            { id: 24, name: "抹茶拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 38, category: "coffee", subcategory: "special",
                 imgUrl: "images/抹茶拿铁.jpg"},
-            { id: 39, name: "抹茶拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", category: "coffee", subcategory: "special",
+            { id: 25, name: "抹茶拿铁", desc: "焦糖与椰香的碰撞与现磨咖啡基底的融合，每一口都是独特的惊喜", price: 36, category: "coffee", subcategory: "special",
                 imgUrl: "images/抹茶拿铁2.jpg"},
             // 无咖系列
-            { id: 40, name: "巧克力牛奶", desc: "绵密的无咖奶饮，温润的口感带着原生清甜，每一口都是无负担的治愈风味", category: "coffee", subcategory: "noncoffee",
+            { id: 26, name: "巧克力牛奶", desc: "绵密的无咖奶饮，温润的口感带着原生清甜，每一口都是无负担的治愈风味", price: 37, category: "coffee", subcategory: "noncoffee",
                 imgUrl: "images/巧克力牛奶.jpg"},
         ],
         afternoon: [
-            { id: 41, name: "奥奥小火山+拿铁下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", category: "afternoon", subcategory: "set",
+            { id: 27, name: "奥奥小火山+拿铁下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", price: 168, category: "afternoon", subcategory: "set",
                 imgUrl: "images/奥奥小火山+拿铁下午茶套餐.jpg"},
-            { id: 42, name: "原味巴斯克+桂花拿铁下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选",  category: "afternoon", subcategory: "set",
+            { id: 28, name: "原味巴斯克+桂花拿铁下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", price: 188, category: "afternoon", subcategory: "set",
                 imgUrl: "images/原味巴斯克+桂花拿铁下午茶套餐.jpg"},
-            { id: 43, name: "抹茶巴斯克+任意饮品下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", category: "afternoon", subcategory: "set",
+            { id: 29, name: "抹茶巴斯克+任意饮品下午茶套餐", desc: "含2块精致蛋糕+2杯饮品，午后闺蜜小聚首选", price: 228, category: "afternoon", subcategory: "set",
                 imgUrl: "images/抹茶巴斯克+任意饮品下午茶套餐.jpg"},
-            { id: 44, name: "莓莓雪顶下午茶套餐（不含饮品）", desc: "含2块精致蛋糕，午后闺蜜小聚首选", category: "afternoon", subcategory: "set",
+            { id: 30, name: "莓莓雪顶下午茶套餐（不含饮品）", desc: "含2块精致蛋糕，午后闺蜜小聚首选", price: 268, category: "afternoon", subcategory: "set",
                 imgUrl: "images/莓莓雪顶下午茶套餐（不含饮品）2.png"},
         ]
     };
 
-    //图片缓存池
+    // 核心优化：图片缓存池（改用普通对象）
     var imageCache = {};
     // 核心优化：分页状态管理
     var state = {
@@ -871,7 +813,7 @@
         isLoading: false,
         allProducts: [],
         filteredProducts: [],
-        loadedProductIds: {}
+        loadedProductIds: {} // 已加载的商品ID缓存（改用对象）
     };
 
     // 初始化所有商品数据
@@ -929,7 +871,7 @@
                 tagBg = 'bg-dark';
             }
         }
-        // 蛋糕标签
+        // 蛋糕标签（新增水果系列标签样式）
         else if (product.category === 'cake') {
             if (product.subcategory === 'birthday') {
                 tagText = '异形定制';
@@ -938,7 +880,7 @@
                 tagText = '福寿绵长';
                 tagBg = 'bg-secondary';
             } else if (product.subcategory === 'cartoon') {
-                tagText = '插件童趣';
+                tagText = '小熊奥奥';
                 tagBg = 'bg-primary';
             } else if (product.subcategory === 'chestnut') {
                 tagText = '栗子季坚果';
@@ -946,9 +888,6 @@
             } else if (product.subcategory === 'fruit') {
                 tagText = '水果系列';
                 tagBg = 'bg-green-500';
-            } else if (product.subcategory === 'flower') {
-                tagText = '鲜花系列';
-                tagBg = 'bg-pink-500';
             } else {
                 tagText = '蛋糕系列';
                 tagBg = 'bg-primary';
@@ -1131,7 +1070,7 @@
             });
         }
 
-        // 蛋糕子类事件
+        // 蛋糕子类事件（新增水果系列筛选逻辑）
         var cakeSubcategoryBtns = document.querySelectorAll('.cake-subcategory-btn');
         for (var m = 0; m < cakeSubcategoryBtns.length; m++) {
             var cakeBtn = cakeSubcategoryBtns[m];
@@ -1247,3 +1186,4 @@
 </script>
 </body>
 </html>
+
